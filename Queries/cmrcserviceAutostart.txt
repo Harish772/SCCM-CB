@@ -1,0 +1,7 @@
+SCCM Remote Control uses the "Configuration Manager Remote Control" service on a computer to listen and accecept connections
+
+By defualt this is set to Automatic(delayed) startup this causes a 3-5 min delay after someone reboots before we can connect setting it to just automatc shortens that under a minute after windows loads.
+
+This oneliner can be ran as administrator from telnet, local cmd, or psexec through calling a batch file.
+
+`sc config CmRcService start= auto`
