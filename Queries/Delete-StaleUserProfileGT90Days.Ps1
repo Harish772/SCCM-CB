@@ -1,8 +1,5 @@
 [CmdletBinding()]
-Param(
-    [Parameter(Mandatory = $True)]
-    [string]$Username
-)
+Param()
 
 # List of user accounts to exclude from deletion
 $ExcludedUsers = @("User1", "User2", "User3")
@@ -10,11 +7,12 @@ $ExcludedUsers = @("User1", "User2", "User3")
 $ProfilesDirectory = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList' -Name ProfilesDirectory).ProfilesDirectory
 
 $UserProfiles = Get-CimInstance -ClassName Win32_UserProfile |
-    Where-Object { ($_.LocalPath -eq "$ProfilesDirectory\$Username") -and ($_.Special -eq $false) }
+    Where-Object { ($_.Special -eq $false) }
 
 foreach ($UserProfile in $UserProfiles) {
     $LastLogonDate = $UserProfile.LastUseTime
     $DaysSinceLastLogon = (Get-Date) - $LastLogonDate
+    $Username = $UserProfile.LocalPath -replace "^$ProfilesDirectory\\"
 
     # Check if the username is in the list of excluded users
     if ($ExcludedUsers -contains $Username) {
